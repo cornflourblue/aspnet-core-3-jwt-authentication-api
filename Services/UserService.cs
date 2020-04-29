@@ -55,12 +55,12 @@ namespace WebApi.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             user.Token = tokenHandler.WriteToken(token);
 
-            return user.WithoutPassword();
+            return user;
         }
 
         public IEnumerable<User> GetAll()
         {
-            return _users.WithoutPasswords();
+            return _users;
         }
     }
 }
