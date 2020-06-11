@@ -8,12 +8,13 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using WebApi.Entities;
 using WebApi.Helpers;
+using WebApi.Models;
 
 namespace WebApi.Services
 {
     public interface IUserService
     {
-        User Authenticate(string username, string password);
+        AuthenticateResponse Authenticate(AuthenticateRequest model);
         IEnumerable<User> GetAll();
     }
 
@@ -32,15 +33,29 @@ namespace WebApi.Services
             _appSettings = appSettings.Value;
         }
 
-        public User Authenticate(string username, string password)
+        public AuthenticateResponse Authenticate(AuthenticateRequest model)
         {
-            var user = _users.SingleOrDefault(x => x.Username == username && x.Password == password);
+            var user = _users.SingleOrDefault(x => x.Username == model.Username && x.Password == model.Password);
 
             // return null if user not found
-            if (user == null)
-                return null;
+            if (user == null) return null;
 
             // authentication successful so generate jwt token
+            var token = generateJwtToken(user);
+
+            return new AuthenticateResponse(user, token);
+        }
+
+        public IEnumerable<User> GetAll()
+        {
+            return _users;
+        }
+
+        // helper methods
+
+        private string generateJwtToken(User user)
+        {
+            // generate token that is valid for 7 days
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -53,14 +68,7 @@ namespace WebApi.Services
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            user.Token = tokenHandler.WriteToken(token);
-
-            return user;
-        }
-
-        public IEnumerable<User> GetAll()
-        {
-            return _users;
+            return tokenHandler.WriteToken(token);
         }
     }
 }

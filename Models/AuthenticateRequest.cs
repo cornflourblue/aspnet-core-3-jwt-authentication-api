@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebApi.Models
 {
-    public class AuthenticateModel
+    public class AuthenticateRequest
     {
         [Required]
         public string Username { get; set; }

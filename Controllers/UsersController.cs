@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using WebApi.Services;
 using WebApi.Models;
-using System.Linq;
 
 namespace WebApi.Controllers
 {
@@ -20,14 +19,14 @@ namespace WebApi.Controllers
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        public IActionResult Authenticate([FromBody]AuthenticateModel model)
+        public IActionResult Authenticate([FromBody]AuthenticateRequest model)
         {
-            var user = _userService.Authenticate(model.Username, model.Password);
+            var response = _userService.Authenticate(model);
 
-            if (user == null)
+            if (response == null)
                 return BadRequest(new { message = "Username or password is incorrect" });
 
-            return Ok(user);
+            return Ok(response);
         }
 
         [HttpGet]
