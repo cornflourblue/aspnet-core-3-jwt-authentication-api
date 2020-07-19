@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using WebApi.Services;
 using WebApi.Models;
+using WebApi.Services;
 
 namespace WebApi.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class UsersController : ControllerBase
@@ -17,9 +15,8 @@ namespace WebApi.Controllers
             _userService = userService;
         }
 
-        [AllowAnonymous]
         [HttpPost("authenticate")]
-        public IActionResult Authenticate([FromBody]AuthenticateRequest model)
+        public IActionResult Authenticate(AuthenticateRequest model)
         {
             var response = _userService.Authenticate(model);
 
@@ -29,6 +26,7 @@ namespace WebApi.Controllers
             return Ok(response);
         }
 
+        [Authorize]
         [HttpGet]
         public IActionResult GetAll()
         {
