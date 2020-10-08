@@ -20,7 +20,9 @@ namespace WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors();
-            services.AddControllers();
+            services.AddControllers()
+                //.AddMvcOptions(x => x.Filters.Add(new AuthorizeAttribute())) //Uncomment this line to add the authorize attribute to all route by default
+                ;
 
             // configure strongly typed settings object
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
