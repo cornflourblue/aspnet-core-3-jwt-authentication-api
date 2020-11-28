@@ -3,8 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Linq;
+<<<<<<< Updated upstream
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Controllers;
+=======
+>>>>>>> Stashed changes
 using WebApi.Entities;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
@@ -12,6 +15,7 @@ public class AuthorizeAttribute : Attribute, IAuthorizationFilter
 {
     public void OnAuthorization(AuthorizationFilterContext context)
     {
+<<<<<<< Updated upstream
         // We're checking here to see if the route has been decorated with an [AllowAnonymous] attribute. If it has, we skip authorization
         // for the route. Doing this allows us to apply the [Authorize] attribute by default in the startup using:
         //
@@ -29,6 +33,10 @@ public class AuthorizeAttribute : Attribute, IAuthorizationFilter
         
         var user = (User)context.HttpContext.Items["User"];
         if (user == null)
+=======
+        var userId = context.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "id")?.Value;
+        if (userId == null)
+>>>>>>> Stashed changes
         {
             // not logged in
             context.Result = new JsonResult(new { message = "Unauthorized" }) { StatusCode = StatusCodes.Status401Unauthorized };
